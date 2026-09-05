@@ -1,0 +1,5 @@
+# Transformação de Dados
+
+Esta pasta contém os scripts PySpark executados no AWS Glue para o processamento e transformação dos dados entre as camadas Bronze, Silver e Gold.
+
+Os scripts contemplam o tratamento das três edições da pesquisa State of Data Brasil e a posterior harmonização dos schemas para geração da base analítica consolidada na camada Gold.
