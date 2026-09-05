@@ -1,3 +1,5 @@
+# Tech Challenge Fase 3 - FIAP
+# Pipeline PySpark para consolidação das camadas Silver e Gold
 import sys
 
 from awsglue.utils import getResolvedOptions
