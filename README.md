@@ -1,33 +1,126 @@
-# Tech Challenge — Fase 3 | FIAP
+# Tech Challenge - Fase 3
 
-Projeto desenvolvido para o **Tech Challenge — Fase 3 da Pós-Tech em Data Analytics da FIAP**.
+**FIAP - Pós Tech**
 
-A solução utiliza três edições da pesquisa **State of Data Brasil** para construir um pipeline de Engenharia de Dados em ambiente AWS e gerar análises sobre o mercado brasileiro de Dados e Inteligência Artificial.
+**Integrantes:**
+- Victor Schiavone Campos - RM 370608
+- Juliana Bahia - RM 370343
 
-## Integrantes
+## Sobre o projeto
 
-- **Victor Schiavone Campos — RM 370608**
-- **Juliana Bahia — RM 370343**
+Este repositório reúne os artefatos técnicos desenvolvidos para o **Tech Challenge - Fase 3**, cujo objetivo é analisar o mercado brasileiro de Dados, Analytics e Inteligência Artificial a partir das três edições mais recentes da pesquisa **State of Data Brasil**.
 
-## Objetivo
+O projeto implementa uma solução de Engenharia de Dados e Analytics em ambiente AWS, utilizando arquitetura em camadas **Bronze, Silver e Gold**.
 
-Construir uma solução de Engenharia de Dados e Analytics capaz de integrar, tratar e consolidar dados de diferentes edições da pesquisa State of Data Brasil, disponibilizando uma camada analítica para geração de indicadores, visualizações, insights e recomendações estratégicas.
+## Arquitetura e tecnologias
 
-## Dados utilizados
+O pipeline foi desenvolvido utilizando:
 
-Foram utilizadas três edições da pesquisa **State of Data Brasil**:
+- Amazon S3
+- AWS Glue Jobs
+- AWS Glue Studio Notebook
+- Apache Spark / PySpark
+- Python
+- Pandas
+- Arquitetura Medallion: Bronze, Silver e Gold
+- Draw.io para documentação da arquitetura
 
-- 2023–2024
-- 2024–2025
-- 2025–2026
+Os dados brutos das três pesquisas foram armazenados na camada **Bronze** no Amazon S3.
 
-Os arquivos originais em formato CSV foram utilizados como fonte de dados e armazenados na camada **Bronze do Amazon S3**.
+Os **AWS Glue Jobs**, utilizando Apache Spark/PySpark, realizaram o tratamento e a transformação dos dados, gerando arquivos tratados em formato Parquet na camada **Silver**.
 
-Os arquivos de dados não são versionados neste repositório. O `.gitignore` impede o versionamento de arquivos `.csv` e `.parquet`, mantendo no GitHub os códigos, notebooks e documentos relacionados à implementação.
+Posteriormente, os diferentes schemas das três pesquisas foram harmonizados e consolidados por meio de AWS Glue Job com Spark/PySpark, resultando na camada **Gold**.
 
-## Perguntas de negócio
+A camada Gold foi utilizada como fonte para **consultas analíticas executadas em AWS Glue Studio Notebook com Apache Spark/PySpark**, além de alimentar as análises desenvolvidas em Python e Pandas para geração dos indicadores, visualizações, insights e recomendações estratégicas.
 
-As análises foram estruturadas para responder às sete perguntas propostas no Tech Challenge:
+## Fluxo do pipeline
+
+```text
+State of Data Brasil
+        ↓
+Amazon S3
+Camada Bronze
+        ↓
+AWS Glue Jobs
+Apache Spark / PySpark
+Tratamento e transformação
+        ↓
+Amazon S3
+Camada Silver - Parquet
+        ↓
+AWS Glue Job
+Apache Spark / PySpark
+Harmonização dos schemas
+        ↓
+Amazon S3
+Camada Gold
+Base consolidada - 14.002 registros
+        │
+        ├────→ AWS Glue Studio Notebook
+        │      Spark / PySpark
+        │      Consultas analíticas
+        │
+        └────→ Python / Pandas
+               DataViz e Storytelling
+                       ↓
+               Relatório Executivo
+               Insights e Recomendações
+```
+
+## Estrutura do repositório
+
+```text
+.
+├── arquitetura/
+│   └── Diagrama da arquitetura AWS
+│
+├── cadernos/
+│   ├── 01_data_understanding.ipynb
+│   ├── 02_analise_gold_storytelling.ipynb
+│   └── 03_consultas_analiticas_gold_glue.ipynb
+│
+├── documentos/
+│   └── Relatório executivo do Tech Challenge
+│
+└── src/
+    └── transformação/
+        ├── bronze_to_silver_2023_2024.py
+        ├── bronze_to_silver_2024_2025.py
+        ├── bronze_to_silver_2025_2026.py
+        └── silver_to_gold_analytics.py
+```
+
+## Processamento dos dados
+
+O processamento foi estruturado de acordo com a arquitetura Medallion:
+
+**Bronze:** armazenamento dos arquivos CSV originais das três edições da pesquisa State of Data Brasil no Amazon S3.
+
+**Silver:** tratamento e transformação dos dados utilizando AWS Glue Jobs e Apache Spark/PySpark, com armazenamento dos dados tratados em formato Parquet.
+
+**Gold:** harmonização dos diferentes schemas das pesquisas e consolidação das três edições em uma única base analítica.
+
+A camada Gold consolidada possui **14.002 registros e 1.194 colunas**, abrangendo os três períodos analisados.
+
+## Consultas analíticas no AWS Glue
+
+A camada Gold foi consultada por meio do **AWS Glue Studio Notebook utilizando Apache Spark/PySpark**.
+
+As consultas realizadas permitiram validar a estrutura da camada consolidada e analisar a distribuição dos registros entre os três períodos da pesquisa:
+
+- **2023-2024:** 5.293 registros
+- **2024-2025:** 5.215 registros
+- **2025-2026:** 3.494 registros
+
+Totalizando **14.002 registros**.
+
+O notebook utilizado nessa etapa está disponível em:
+
+`cadernos/03_consultas_analiticas_gold_glue.ipynb`
+
+## Análises desenvolvidas
+
+As análises foram direcionadas às sete perguntas de negócio propostas no desafio, contemplando:
 
 1. Como está estruturado o mercado brasileiro de Dados?
 2. Quais perfis profissionais são mais valorizados pelo mercado?
@@ -37,172 +130,20 @@ As análises foram estruturadas para responder às sete perguntas propostas no T
 6. Existem diferenças relevantes entre regiões, senioridades ou modelos de trabalho?
 7. Quais oportunidades e desafios podem ser identificados para empresas que desejam investir em Dados e Inteligência Artificial?
 
-## Arquitetura da solução
+As análises e visualizações foram desenvolvidas em **Python e Pandas**, utilizando a camada Gold como fonte dos dados consolidados.
 
-A solução foi estruturada seguindo uma arquitetura de dados em camadas:
+## Dados
 
-**Bronze → Silver → Gold**
+As bases utilizadas são provenientes da pesquisa **State of Data Brasil**, disponibilizada pela comunidade Data Hackers.
 
-O fluxo implementado foi:
+Os arquivos CSV originais e os arquivos Parquet gerados pelo pipeline não são versionados neste repositório.
 
-**State of Data Brasil — CSV**  
-↓  
-**Amazon S3 — Bronze**  
-↓  
-**AWS Glue Jobs + Apache Spark**  
-↓  
-**Amazon S3 — Silver — Parquet**  
-↓  
-**AWS Glue Job + Apache Spark**  
-↓  
-**Amazon S3 — Gold — Parquet**  
-↓  
-**Python + Pandas**  
-↓  
-**DataViz, Storytelling e análises**  
-↓  
-**Insights e recomendações estratégicas**
+O processamento e o armazenamento das camadas Bronze, Silver e Gold foram realizados no **Amazon S3** durante a execução do projeto.
 
-O diagrama completo da solução está disponível na pasta `arquitetura/`.
+## Resultado
 
-## Pipeline de dados
+O projeto implementou um pipeline de Engenharia de Dados e Analytics utilizando **Amazon S3, AWS Glue Jobs, Apache Spark/PySpark e AWS Glue Studio Notebook**, estruturado nas camadas Bronze, Silver e Gold.
 
-### Bronze
+As três edições da pesquisa foram consolidadas em uma camada Gold com **14.002 registros**, utilizada para consultas analíticas no AWS Glue Notebook e como fonte das análises em Python/Pandas.
 
-A camada Bronze armazena os arquivos CSV originais das três edições da pesquisa, preservando os dados brutos utilizados como entrada do pipeline.
-
-### Silver
-
-Os dados armazenados na Bronze são processados por **AWS Glue Jobs utilizando Apache Spark/PySpark**.
-
-Foram desenvolvidos jobs específicos para cada edição da pesquisa. Nesta etapa são realizados tratamentos e transformações dos dados, com armazenamento dos resultados em formato **Parquet** na camada Silver.
-
-### Gold
-
-Os dados tratados das três pesquisas são posteriormente processados por um novo AWS Glue Job.
-
-Como as edições possuem diferenças em seus schemas, foi realizada a **harmonização das estruturas e consolidação das três pesquisas**.
-
-A camada Gold resultante possui **14.002 registros** e constitui a base analítica utilizada nas etapas posteriores do projeto.
-
-## Tecnologias utilizadas
-
-- Amazon S3
-- AWS Glue
-- Apache Spark
-- PySpark
-- Python
-- Pandas
-- Google Colab
-- Draw.io
-- GitHub
-
-## Estrutura do repositório
-
-```text
-├── arquitetura/
-│   ├── README.md
-│   ├── diagrama da arquitetura (.png)
-│   └── arquivo editável da arquitetura (.drawio)
-│
-├── cadernos/
-│   ├── 01_data_understanding.ipynb
-│   └── 02_analise_gold_storytelling.ipynb
-│
-├── documentos/
-│   └── relatório executivo do projeto (.pdf)
-│
-├── src/
-│   └── transformação/
-│       ├── bronze_to_silver_2023_2024.py
-│       ├── bronze_to_silver_2024_2025.py
-│       ├── bronze_to_silver_2025_2026.py
-│       └── silver_to_gold_analytics.py
-│
-├── .gitignore
-└── README.md
-```
-
-## Notebooks
-
-### 01 — Data Understanding
-
-O notebook `01_data_understanding.ipynb` contém a etapa inicial de compreensão dos dados.
-
-Nele são exploradas as três edições da pesquisa State of Data Brasil, suas estruturas, dimensões, variáveis e particularidades, fornecendo a base para as etapas posteriores de Engenharia de Dados e Analytics.
-
-### 02 — Análise da camada Gold, DataViz e Storytelling
-
-O notebook `02_analise_gold_storytelling.ipynb` utiliza os dados consolidados da camada Gold.
-
-Nele são realizadas as análises relacionadas às sete perguntas de negócio, incluindo construção de indicadores, visualizações, interpretação dos resultados, storytelling e elaboração de recomendações estratégicas.
-
-## Processamento com AWS Glue e PySpark
-
-Os scripts disponíveis em `src/transformação/` representam os jobs PySpark utilizados para processamento dos dados:
-
-- `bronze_to_silver_2023_2024.py` — processamento da pesquisa 2023–2024;
-- `bronze_to_silver_2024_2025.py` — processamento da pesquisa 2024–2025;
-- `bronze_to_silver_2025_2026.py` — processamento da pesquisa 2025–2026;
-- `silver_to_gold_analytics.py` — harmonização dos schemas e consolidação das três pesquisas na camada Gold.
-
-Os scripts documentam as principais etapas de transformação realizadas no ambiente AWS Glue utilizando Apache Spark/PySpark.
-
-## Análises de negócio
-
-A camada Gold foi utilizada como fonte analítica para investigar diferentes dimensões do mercado brasileiro de Dados, incluindo:
-
-- estrutura e composição do mercado;
-- senioridade e cargos;
-- valorização profissional;
-- diversidade de gênero;
-- tecnologias utilizadas;
-- adoção de Inteligência Artificial;
-- diferenças regionais;
-- modelos de trabalho;
-- oportunidades e desafios para organizações que investem em Dados e IA.
-
-As análises completas, gráficos e interpretações estão disponíveis no notebook `02_analise_gold_storytelling.ipynb`.
-
-## Principais entregáveis
-
-O projeto está organizado em três principais componentes:
-
-**1. Engenharia de Dados**  
-Pipeline implementado em AWS utilizando Amazon S3, AWS Glue e Apache Spark/PySpark, seguindo as camadas Bronze, Silver e Gold.
-
-**2. Analytics e Storytelling**  
-Notebooks contendo Data Understanding, análise da camada Gold, indicadores, visualizações, respostas às perguntas de negócio e recomendações estratégicas.
-
-**3. Documentação Executiva**  
-Relatório executivo contendo a arquitetura da solução, principais indicadores, análises, insights e recomendações obtidas a partir dos dados.
-
-## Arquitetura
-
-O diagrama disponível na pasta `arquitetura/` apresenta visualmente todo o fluxo implementado, desde a ingestão das pesquisas State of Data Brasil até o consumo executivo das análises.
-
-O arquivo é disponibilizado em formato de imagem e também no formato editável do Draw.io.
-
-## Documentação executiva
-
-O relatório executivo consolida os principais resultados do projeto e apresenta:
-
-- contexto e objetivo;
-- perguntas de negócio;
-- arquitetura AWS;
-- resultados e indicadores;
-- insights;
-- oportunidades e desafios;
-- recomendações estratégicas;
-- conclusões.
-
-O PDF final está disponível na pasta `documentos/`.
-
----
-
-### FIAP — Pós-Tech Data Analytics
-
-**Tech Challenge — Fase 3**
-
-**Victor Schiavone Campos — RM 370608**  
-**Juliana Bahia — RM 370343**
+A partir dos dados consolidados foram produzidos indicadores, visualizações, insights e recomendações estratégicas sobre o mercado brasileiro de Dados e Inteligência Artificial, apresentados no relatório executivo do Tech Challenge.
